@@ -26,7 +26,7 @@
         </span>
       </el-form-item>
 
-      <el-button type="primary" class="loginBtn" style="width:100%;margin-bottom:30px;">登录</el-button>
+      <el-button type="primary" class="loginBtn" style="width:100%;margin-bottom:30px;" :loading="loading" @click="login">登录</el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">账号: 13800000002</span>
@@ -50,6 +50,7 @@ export default {
       return callback(new Error('手机号格式不正确'))
     }
     return {
+      loading: false,
       passwordType: 'password',
       formData: {
         mobile: '13800000002',
@@ -76,6 +77,24 @@ export default {
       this.$nextTick(() => {
         this.$refs.pwd.focus()
       })
+    },
+    async login() {
+    //   this.$refs.loginForm.validate((valid) => {
+    //     if (valid) {
+      //     }
+      //     return
+      //   })
+      try {
+        await this.$refs.loginForm.validate()
+        this.loading = true
+        await this.$store.dispatch('user/login', this.formData)
+        // 登录成功跳转页面
+        this.$router.push('/')
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.loading = false
+      }
     }
   }
 }
