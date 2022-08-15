@@ -1,10 +1,30 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" class="login-form" label-position="left">
+    <el-form ref="loginForm" class="login-form" label-position="left" :model="formData" :rules="rules">
 
       <div class="title-container">
         <img src="@/assets/common/login-logo.png" alt="">
       </div>
+
+      <el-form-item prop="mobile">
+        <!-- <span
+          class="svg-container el-icon-user-solid"
+        /> -->
+        <span class="svg-container">
+          <svg-icon icon-class="user" />
+        </span>
+        <el-input v-model="formData.mobile" placeholder="请输入手机号码" />
+      </el-form-item>
+
+      <el-form-item prop="password">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-input ref="pwd" v-model="formData.password" :type="passwordType" placeholder="请输入密码" />
+        <span class="svg-container" @click="changeEye">
+          <svg-icon :icon-class="passwordType==='password'&&'eye'||'eye-open'" />
+        </span>
+      </el-form-item>
 
       <el-button type="primary" class="loginBtn" style="width:100%;margin-bottom:30px;">登录</el-button>
 
@@ -18,17 +38,45 @@
 </template>
 
 <script>
-// import { validUsername } from '@/utils/validate'
+import { validMobile } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
+    const validatorMobile = (rule, value, callback) => {
+      if (validMobile(value)) {
+        return callback()
+      }
+      return callback(new Error('手机号格式不正确'))
+    }
     return {
+      passwordType: 'password',
+      formData: {
+        mobile: '13800000002',
+        password: '123456'
+      },
+      rules: {
+        mobile: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          // { pattern: /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$/, message: '手机号格式不正确', trigger: 'blur' }
+          { validator: validatorMobile, trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' },
+          { min: 6, max: 16, message: '密码为6-16位', trigger: 'blur' }
+        ]
+      }
     }
   },
   watch: {
   },
   methods: {
+    changeEye() {
+      this.passwordType === 'password' ? this.passwordType = '' : this.passwordType = 'password'
+      this.$nextTick(() => {
+        this.$refs.pwd.focus()
+      })
+    }
   }
 }
 </script>
