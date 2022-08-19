@@ -8,6 +8,17 @@ export function login(data) {
   })
 }
 
+/**
+ * 获取用户资料
+ * @returns Promise
+ */
+export function getUserInfo() {
+  return request({
+    url: '/sys/profile',
+    method: 'POST'
+  })
+}
+
 export function logout() {
 
 }
