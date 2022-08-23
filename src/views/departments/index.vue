@@ -1,12 +1,12 @@
 <template>
-  <div class="departments-container">
+  <div v-loading="loading" class="departments-container">
     <el-card class="tree-card">
       <tree-tool :tree-node="company" @add="addDept" />
     </el-card>
     <el-tree :data="departs" :props="defaultProps" :default-expand-all="true">
-      <tree-tool slot-scope="{data}" :tree-node="data" :is-root="true" @add="addDept" />
+      <tree-tool slot-scope="{data}" :tree-node="data" :is-root="true" @add="addDept" @edit="editDept" @refreshDept="getDepartments" />
     </el-tree>
-    <add-dept :visible-dialog.sync="dialogVisible" :current-node="currentNode" />
+    <add-dept ref="addDept" :visible-dialog.sync="dialogVisible" :current-node="currentNode" @refreshDept="getDepartments" />
   </div>
 </template>
 
@@ -29,7 +29,8 @@ export default {
       company: {
       },
       dialogVisible: false,
-      currentNode: {}
+      currentNode: {},
+      loading: false
     }
   },
   created() {
@@ -37,13 +38,20 @@ export default {
   },
   methods: {
     async getDepartments() {
+      this.loading = true
       const { depts, companyName, companyManage } = await getDepartments()
       this.departs = changeArrToTree(depts, '')
       this.company = { name: companyName, manager: companyManage, id: '' }
+      this.loading = false
     },
     addDept(node) {
       this.currentNode = node
       this.dialogVisible = true
+    },
+    editDept(node) {
+      this.currentNode = node
+      this.dialogVisible = true
+      this.$refs.addDept.formData = { ...node }
     }
   }
 }

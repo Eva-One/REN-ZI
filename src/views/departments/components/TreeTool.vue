@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { delDepartments } from '@/api/departments'
 export default {
   props: {
     treeNode: {
@@ -41,6 +42,20 @@ export default {
     handleCommand(command) {
       if (command === 'add') {
         this.$emit('add', this.treeNode)
+      } else if (command === 'edit') {
+        this.$emit('edit', this.treeNode)
+      } else {
+        this.$confirm('确认删除该部门嘛？', '提示', {
+          type: 'warning'
+        }).then(res => {
+        //   await delDepartments(this.treeNode.id)
+        //   this.$emit('refreshDept')
+        //   this.$message.success('删除部门成功')
+          return delDepartments(this.treeNode.id)
+        }).then(res => {
+          this.$emit('refreshDept')
+          this.$message.success('删除部门成功')
+        })
       }
     }
   }
