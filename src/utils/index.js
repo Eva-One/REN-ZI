@@ -115,3 +115,18 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+// 将数组转换为树形数据结构
+export const changeArrToTree = (list, id) => {
+  const treeArr = []
+  list.forEach(ele => {
+    if (ele.pid === id) {
+      const children = changeArrToTree(list, ele.id)
+      if (children.length > 0) {
+        ele.children = children
+      }
+      treeArr.push(ele)
+    }
+  })
+  return treeArr
+}
