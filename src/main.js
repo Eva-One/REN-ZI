@@ -20,6 +20,11 @@ Object.keys(directives).forEach((ele) => {
   Vue.directive(ele, directives[ele])
 })
 
+import components from '@/components'
+Vue.use(components)
+
+import * as filters from '@/filters'
+Object.keys(filters).forEach(ele => Vue.filter(ele, filters[ele]))
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
 Vue.use(ElementUI)
