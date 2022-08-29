@@ -62,8 +62,20 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
+  },
+
+  {
+    path: '/import',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'import',
+        component: () => import('@/views/import')
+      }
+    ]
   },
 
   // ...asyncRoutes,  静态和动态路由放一起不合理

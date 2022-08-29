@@ -8,7 +8,7 @@
         departmentName: '',
         timeOfEntry: '',
         correctionTime: '' -->
-    <el-form label-width="120px" :model="formData" :rules="rules">
+    <el-form ref="addEmployee" label-width="120px" :model="formData" :rules="rules">
       <el-form-item label="姓名" prop="username">
         <el-input v-model="formData.username" style="width:80%" placeholder="请输入姓名" />
       </el-form-item>
@@ -38,8 +38,8 @@
     <template v-slot:footer>
       <el-row type="flex" justify="center">
         <el-col :span="6">
-          <el-button size="small">取消</el-button>
-          <el-button type="primary" size="small">确定</el-button>
+          <el-button size="small" @click="handleClose">取消</el-button>
+          <el-button v-loading="submitLoading" type="primary" size="small" @click="submitAddEmployee">确定</el-button>
         </el-col>
       </el-row>
     </template>
@@ -50,6 +50,7 @@
 import employeeNum from '@/api/constant/employees'
 import { getDepartments } from '@/api/departments'
 import { changeArrToTree } from '@/utils'
+import { addEmployee } from '@/api/employees'
 export default {
   props: {
     showDialog: {
@@ -75,6 +76,7 @@ export default {
       },
       showTree: false,
       loading: false,
+      submitLoading: false,
       // 用户名必填，username，长度为1-4位
       // 手机号必填，mobile，需满足 正则表达式 /^1[3-9]\d{9}$/
       // 聘用形式必填， formOfEmployment
@@ -109,6 +111,17 @@ export default {
   methods: {
     handleClose() {
       this.$emit('update:show-dialog', false)
+      this.$refs.addEmployee.resetFields()
+      this.showTree = false
+      this.formData = {
+        username: '',
+        mobile: '',
+        formOfEmployment: '',
+        workNumber: '',
+        departmentName: '',
+        timeOfEntry: '',
+        correctionTime: ''
+      }
     },
     async getDept() {
       this.loading = true
@@ -120,6 +133,20 @@ export default {
     handleClick(node) {
       this.formData.departmentName = node.name
       this.showTree = false
+    },
+    async submitAddEmployee() {
+      try {
+        this.submitLoading = true
+        await this.$refs.addEmployee.validate()
+        await addEmployee(this.formData)
+        this.$emit('refresh')
+        this.$message.success('新增员工成功')
+        this.handleClose()
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.submitLoading = false
+      }
     }
   }
 }
