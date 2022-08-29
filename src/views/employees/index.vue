@@ -13,6 +13,12 @@
       <el-table v-loading="loading" border :data="list">
         <el-table-column label="序号" sortable="" width="80" type="index" />
         <el-table-column label="姓名" prop="username" />
+        <el-table-column label="头像">
+          <template slot-scope="{row}">
+            <img v-imgError="require('@/assets/common/bigUserHeader.png')" :src="row.staffPhoto" alt="" style="border-radius: 50%; width: 100px; height: 100px; padding: 10px" @click="showCode(row.staffPhoto)">
+          </template>
+        </el-table-column>
+
         <el-table-column label="工号" prop="workNumber" />
         <el-table-column label="聘用形式" prop="formOfEmployment" :formatter="formatEmployment" />
         <el-table-column label="部门" prop="departmentName" />
@@ -54,6 +60,12 @@
     </el-card>
 
     <AddEmployee :show-dialog.sync="dialogShow" @refresh="getEmployeeList" />
+
+    <el-dialog title="头像二维码" :visible.sync="showCodeDialog">
+      <el-row type="flex" justify="center">
+        <canvas id="myCanvas" />
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -62,6 +74,7 @@ import { getEmployeeList, delEmployee } from '@/api/employees'
 import employeesForm from '@/api/constant/employees'
 import AddEmployee from './components/AddEmployee.vue'
 import { formatDate } from '@/filters'
+import QrCode from 'qrcode'
 export default {
   components: {
     AddEmployee
@@ -75,7 +88,8 @@ export default {
       total: 0,
       list: [],
       dialogShow: false,
-      loading: false
+      loading: false,
+      showCodeDialog: false
     }
   },
   mounted() {
@@ -119,6 +133,13 @@ export default {
         this.$message.success('删除员工成功')
       } catch (e) {
         console.log(e)
+      }
+    },
+    async showCode(url) {
+      if (url) {
+        this.showCodeDialog = true
+        await this.$nextTick()
+        QrCode.toCanvas(document.querySelector('#myCanvas'), url)
       }
     },
     async exportData() {

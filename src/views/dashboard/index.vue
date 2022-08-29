@@ -3,6 +3,7 @@
     <div class="dashboard-text">name:</div>
     <!-- <UploadExcel :before-upload="btnUpload" /> -->
     <a href="http://mrdu-68-1313504142.cos.ap-nanjing.myqcloud.com/%E7%9A%AE%E5%8D%A1%E4%B8%98.jpg" download="touxiang.jpg">点击下载</a>
+    <UploadImg @onSuccess="success" />
   </div>
 </template>
 
@@ -24,7 +25,10 @@ export default {
     //     return false
     //   }
     //   return true
-    // }
+    // },
+    success({ url }) {
+      console.log(url)
+    }
   }
 }
 </script>

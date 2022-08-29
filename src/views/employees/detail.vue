@@ -62,6 +62,7 @@ export default {
     async getUserDetailById() {
       this.userInfo = await getUserDetailById(this.$route.params.id)
       this.$refs.userInfo.userInfo = { ...this.userInfo }
+      this.$refs.userInfo.setStaffImg({ url: this.userInfo.staffPhoto })
     },
     async saveUserDetailById() {
       try {

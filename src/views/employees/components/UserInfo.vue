@@ -1,5 +1,13 @@
 <template>
   <div class="user-info">
+    <el-row type="flex" justify="end">
+      <el-tooltip content="打印个人基本信息">
+        <router-link :to="`/employees/print/${userId}?type=personal`">
+          <i class="el-icon-printer" />
+        </router-link>
+      </el-tooltip>
+    </el-row>
+
     <!-- 个人信息 -->
     <el-form label-width="220px">
       <!-- 工号 入职时间 -->
@@ -58,7 +66,7 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-
+            <UploadImg ref="staffImg" @onSuccess="loadImgSuccess" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -90,6 +98,7 @@
 
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
+          <UploadImg ref="staffPhoto" @onSuccess="loadPhotoSuccess" />
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -363,12 +372,32 @@ export default {
   methods: {
     async getPersonalDetail() {
       this.formData = await getPersonalDetail(this.userId)
+      // this.$refs.staffImg.fileList.push({ url: this.userInfo.staffPhoto })
+      this.$refs.staffPhoto.fileList.push({ url: this.formData.staffPhoto })
     },
     async savePersonal() {
+      if (this.$refs.staffPhoto.loading) {
+        return this.$message.error('图片上传中')
+      }
       await updatePersonal(this.formData)
+      this.$message.success('更新成功')
     },
     async saveUser() {
+      if (this.$refs.staffImg.loading) {
+        return this.$message.error('图片上传中')
+      }
       await saveUserDetailById(this.userInfo)
+      this.$message.success('更新成功')
+    },
+    setStaffImg(img) {
+      console.log(img)
+      this.$refs.staffImg.fileList.push(img)
+    },
+    loadImgSuccess({ url }) {
+      this.userInfo.staffPhoto = url
+    },
+    loadPhotoSuccess({ url }) {
+      this.formData.staffPhoto = url
     }
   }
 }
