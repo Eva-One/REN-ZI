@@ -1,7 +1,7 @@
 <template>
   <el-card class="page-tools">
     <el-row type="flex" justify="space-between" align="middle">
-      <el-col>
+      <el-col v-if="showBefore">
         <div :class="`before ${type}`">
           <i v-if="showIcon" :class="`el-icon-${type}`" />
           <slot name="before" />
@@ -31,6 +31,10 @@ export default {
       }
     },
     showIcon: {
+      type: Boolean,
+      default: true
+    },
+    showBefore: {
       type: Boolean,
       default: true
     }
