@@ -38,7 +38,7 @@
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small" @click="showRole(row.id)">角色</el-button>
             <el-button type="text" size="small" @click="del(row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -66,6 +66,8 @@
         <canvas id="myCanvas" />
       </el-row>
     </el-dialog>
+
+    <AssignRole ref="roleList" v-model="showAssignRole" :user-id="currentId" />
   </div>
 </template>
 
@@ -73,11 +75,13 @@
 import { getEmployeeList, delEmployee } from '@/api/employees'
 import employeesForm from '@/api/constant/employees'
 import AddEmployee from './components/AddEmployee.vue'
+import AssignRole from './components/AssignRole.vue'
 import { formatDate } from '@/filters'
 import QrCode from 'qrcode'
 export default {
   components: {
-    AddEmployee
+    AddEmployee,
+    AssignRole
   },
   data() {
     return {
@@ -89,7 +93,9 @@ export default {
       list: [],
       dialogShow: false,
       loading: false,
-      showCodeDialog: false
+      showCodeDialog: false,
+      showAssignRole: false,
+      currentId: null
     }
   },
   mounted() {
@@ -142,6 +148,13 @@ export default {
         QrCode.toCanvas(document.querySelector('#myCanvas'), url)
       }
     },
+
+    async showRole(id) {
+      await this.$refs.roleList.getRoleList()
+      this.currentId = id
+      this.showAssignRole = true
+    },
+
     async exportData() {
       const { rows } = await getEmployeeList({
         page: 1, size: this.total
