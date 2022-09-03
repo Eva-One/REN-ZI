@@ -19,7 +19,7 @@
           <el-table-column prop="description" label="描述" />
           <el-table-column label="操作" width="320">
             <template slot-scope="scope">
-              <el-button size="small" type="success">分配权限</el-button>
+              <el-button size="small" type="success" @click="assignPer(scope.row)">分配权限</el-button>
               <el-button size="small" type="primary" @click="edit(scope.row)">编辑</el-button>
               <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
             </template>
@@ -65,16 +65,20 @@
     </el-tabs>
 
     <role-dialog ref="dialog" :dialog-visible.sync="dialogVisible" />
+
+    <ManagerPermission ref="managePer" :dialog-visible.sync="dialogVisible1" />
   </div>
 </template>
 
 <script>
 import { getRoleList, deleteRole, getCompanyInfo } from '@/api/setting'
 import RoleDialog from './components/RoleDialog.vue'
+import ManagerPermission from './components/ManagerPermission.vue'
 import { mapGetters } from 'vuex'
 export default {
   components: {
-    RoleDialog
+    RoleDialog,
+    ManagerPermission
   },
   data() {
     return {
@@ -84,7 +88,8 @@ export default {
       total: 0,
       loading: false,
       dialogVisible: false,
-      formData: {}
+      formData: {},
+      dialogVisible1: false
     }
   },
   computed: {
@@ -149,6 +154,10 @@ export default {
     async getCompanyInfo() {
       const res = await getCompanyInfo(this.companyId)
       this.formData = res
+    },
+    async assignPer(row) {
+      await this.$refs.managePer.getPermissionList(row.id)
+      this.dialogVisible1 = true
     }
   }
 }

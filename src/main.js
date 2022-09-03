@@ -26,6 +26,9 @@ Vue.use(components)
 import * as filters from '@/filters'
 Object.keys(filters).forEach(ele => Vue.filter(ele, filters[ele]))
 
+import mixin from '@/mixin/checkPermission'
+Vue.mixin(mixin)
+
 import Print from 'vue-print-nb'
 Vue.use(Print)
 // set ElementUI lang to EN
