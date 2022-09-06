@@ -30,8 +30,8 @@
 <script>
 import COS from 'cos-js-sdk-v5'
 const cos = new COS({
-  SecretId: 'AKIDfBSXNxIkx4ygBPN5bv46vXu1pOh2NYXI',
-  SecretKey: 'jEXdZLvWw87rL7uZ0DD0azBAvSmuoU9e'
+  SecretId: '',
+  SecretKey: ''
 })
 console.log(cos)
 
